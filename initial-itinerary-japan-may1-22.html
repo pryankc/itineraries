@@ -1,0 +1,3386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Initial Itinerary</title>
+<style>
+:root {
+  --primary: #667eea;
+  --primary-dark: #5a67d8;
+  --primary-light: #7c93f5;
+  --secondary: #764ba2;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fc;
+  --bg-card: #ffffff;
+  --text-primary: #1a202c;
+  --text-secondary: #4a5568;
+  --text-muted: #718096;
+  --border-color: #e2e8f0;
+  --border-light: #edf2f7;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+  --gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-subtle: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  --gray-100: #f3f4f6;
+}
+
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  background: var(--gradient-bg);
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+}
+
+
+/* Unsplash Images Carousel Styling */
+.unsplash-carousel-container {
+  position: relative;
+  width: 100%;
+  margin: 0.5rem 0;
+  overflow: hidden;
+  padding-bottom: 0.5rem;
+}
+
+
+.unsplash-carousel {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.5rem 0;
+  padding-bottom: 20px;
+  margin-bottom: -20px;
+  
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+
+.unsplash-carousel::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+
+.unsplash-image-wrapper {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  position: relative;
+  width: 240px;
+}
+
+
+.unsplash-place-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--primary);
+  padding: 0.2rem 0.5rem;
+  background: var(--gradient-subtle);
+  border-radius: 0.25rem;
+  text-align: center;
+}
+
+
+.unsplash-image-wrapper img {
+  width: 100%;
+  height: 160px;
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-sm);
+  object-fit: cover;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+.unsplash-image-wrapper img:hover {
+  transform: scale(1.02);
+  box-shadow: var(--shadow-md);
+}
+
+
+.unsplash-attribution {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+  line-height: 1.2;
+}
+
+
+.unsplash-attribution a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+
+.unsplash-attribution a:hover {
+  text-decoration: underline;
+}
+
+
+body.toc-open .content-wrapper {
+  filter: blur(4px) brightness(0.9);
+  transition: filter 0.25s ease;
+}
+
+
+body.toc-open .floating-toc,
+body.toc-open .whatsapp-fab,
+body.toc-open .share-fab,
+body.toc-open .toc-fab,
+body.toc-open .scroll-progress {
+  filter: none;
+}
+
+
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transform: scaleX(0);
+  transform-origin: 0%;
+  z-index: 10000;
+  transition: transform 0.1s;
+}
+
+
+.page-header {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
+  padding: 0.5rem 1rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+  transform: translateY(0);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  height: 64px;
+  display: flex;
+  align-items: center;
+}
+
+
+.page-header.hidden {
+  transform: translateY(-100%);
+}
+
+
+.page-header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 0.75rem;
+}
+
+
+.page-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+
+.page-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.2;
+  max-width: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.page-header-underline {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), transparent);
+  opacity: 0.6;
+}
+
+
+.reading-time {
+  gap: 0.3rem;
+  background: rgba(102, 126, 234, 0.06);
+  padding: 0.22rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  border: 1px solid rgba(102, 126, 234, 0.35);
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.25);
+}
+
+
+.whatsapp-fab {
+  position: fixed;
+  top: 16px;
+  right: 18px;
+  width: 46px;
+  height: 46px;
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.45);
+  font-size: 18px;
+  z-index: 1100;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.whatsapp-fab:hover {
+  transform: scale(1.08);
+  box-shadow: 0 8px 20px rgba(37, 211, 102, 0.55);
+}
+
+.whatsapp-fab:active {
+  transform: scale(0.95);
+}
+
+
+body.toc-open .whatsapp-fab {
+  filter: none;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .whatsapp-fab {
+    top: 50px;
+    right: 14px;
+    width: 42px;
+    height: 42px;
+  }
+}
+
+
+.share-fab {
+  position: fixed;
+  top: 70px;
+  right: 18px;
+  width: 46px;
+  height: 46px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.45);
+  font-size: 18px;
+  z-index: 1100;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+.share-fab:hover {
+  transform: scale(1.08);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.55);
+}
+
+
+.share-fab:active {
+  transform: scale(0.95);
+}
+
+
+.toc-fab {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  min-width: 190px;
+  height: 54px;
+  background: linear-gradient(
+    135deg,
+    #0fb9b1,
+    #2d98da
+  );
+  color: #fff;
+  border: none;
+  border-radius: 27px;
+  cursor: pointer;
+  box-shadow: 0 14px 30px rgba(102, 126, 234, 0.55);
+  font-size: 15px;
+  font-weight: 650;
+  z-index: 1000;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  -webkit-tap-highlight-color: transparent;
+  opacity: 0;
+  visibility: hidden;
+  text-decoration: none;
+  letter-spacing: 0.4px;
+  padding: 0 18px;
+  white-space: nowrap;
+}
+
+
+.toc-fab::before {
+  content: 'Jump to section';
+  font-size: 11px;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-right: 4px;
+}
+
+
+.toc-fab.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+
+.toc-fab:hover {
+  transform: translateX(-50%) translateY(-4px) scale(1.03);
+  box-shadow: 0 18px 38px rgba(102, 126, 234, 0.65);
+}
+
+
+.toc-fab:active {
+  transform: translateX(-50%) translateY(1px) scale(0.97);
+}
+
+
+.floating-toc {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(360px, 90vw);
+  max-height: 70vh;
+  background: rgba(248, 249, 255, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(102, 126, 234, 0.25);
+  border-radius: 1.25rem;
+  box-shadow: var(--shadow-lg);
+  z-index: 1200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  overflow: hidden;
+}
+
+
+.floating-toc.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+
+body.dark .floating-toc {
+  background: rgba(30, 37, 51, 0.98);
+  border-color: rgba(102, 126, 234, 0.35);
+}
+
+
+.toc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+  min-height: 44px;
+  background: var(--gradient-subtle);
+}
+
+
+.toc h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+
+.toc-toggle {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 1rem;
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.toc-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+}
+
+
+.toc-toggle:active {
+  transform: scale(0.95);
+}
+
+
+.toc-toggle.collapsed {
+  transform: rotate(-90deg);
+}
+
+
+.toc-content {
+  max-height: 400px;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--gray-100);
+  padding: 0.5rem 0;
+}
+
+
+.toc-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+
+.toc-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+.toc-content::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+
+.toc-content.collapsed {
+  max-height: 0;
+  overflow: hidden;
+}
+
+
+.toc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+
+.toc li {
+  margin: 0.15rem 0;
+}
+
+
+.toc a {
+  color: var(--text-secondary);
+  display: block;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0;
+  transition: all 0.2s;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  font-size: 0.95rem;
+}
+
+
+.toc a:hover,
+.toc a:active {
+  background: rgba(102, 126, 234, 0.15);
+  color: var(--primary);
+  border-left-color: var(--primary);
+  transform: translateX(4px);
+}
+
+
+.toc a.active {
+  background: rgba(102, 126, 234, 0.25);
+  color: var(--primary);
+  font-weight: 600;
+  border-left-color: var(--primary);
+}
+
+
+.content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+  padding-top: 84px;
+  padding-bottom: 5rem;
+}
+
+
+.content-container {
+  background: var(--bg-card);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+
+.main-content {
+  padding: 1.5rem;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  scroll-margin-top: 10rem;
+}
+
+
+h1 {
+  font-size: 2rem;
+  margin-top: 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 3px solid var(--primary);
+}
+
+
+h2 {
+  font-size: 1.625rem;
+  color: var(--primary);
+  margin-top: 2.5rem;
+  padding-left: 0.75rem;
+  border-left: 4px solid var(--primary);
+}
+
+
+h3 {
+  font-size: 1.375rem;
+  color: var(--primary-dark);
+  margin-top: 2rem;
+}
+
+
+h4 {
+  font-size: 1.125rem;
+  margin-top: 1.5rem;
+}
+
+
+h5 {
+  font-size: 1rem;
+  margin-top: 1.25rem;
+}
+
+
+h6 {
+  font-size: 1.0625rem;
+  margin-top: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+
+p {
+  margin-bottom: 1.25rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+}
+
+
+a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  transition: color 0.2s;
+}
+
+
+a:hover,
+a:active {
+  color: var(--primary-dark);
+}
+
+
+strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+
+em {
+  font-style: italic;
+  color: var(--text-primary);
+}
+
+
+hr {
+  border: none;
+  height: 1px;
+  background: var(--border-color);
+  margin: 2rem 0;
+}
+
+
+ul, ol {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+
+li {
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+
+li::marker {
+  color: var(--primary);
+}
+
+
+.content-image {
+  margin: 1.5rem 0;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  background: var(--bg-secondary);
+}
+
+
+.content-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+
+.content-image figcaption {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  text-align: center;
+  background: var(--bg-secondary);
+  font-style: italic;
+}
+
+
+.table-wrapper {
+  margin: 1.5rem 0;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  transition: all 0.3s;
+}
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+
+th, td {
+  padding: 1rem 1.25rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-light);
+}
+
+
+th {
+  background: var(--gradient-bg);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+
+tbody tr {
+  background: var(--bg-primary);
+  transition: all 0.2s;
+}
+
+
+tbody tr:hover {
+  background: var(--bg-secondary);
+}
+
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+
+td {
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+}
+
+
+@media (min-width: 769px) {
+  td.images-cell {
+    width: 420px;
+    max-width: 420px;
+    min-width: 420px;
+  }
+  
+  td.images-cell .unsplash-carousel-container {
+    width: 420px;
+    max-width: 420px;
+  }
+}
+
+
+blockquote {
+  border-left: 4px solid var(--primary);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  background: var(--gradient-subtle);
+  border-radius: 0.5rem;
+  font-style: italic;
+  color: var(--text-primary);
+}
+
+
+code {
+  background: var(--bg-secondary);
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.375rem;
+  font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+  font-size: 0.875em;
+  color: var(--primary);
+  border: 1px solid var(--border-light);
+}
+
+
+@media (max-width: 768px) {
+  body {
+    font-size: 17px;
+    line-height: 1.75;
+  }
+
+
+  .page-header {
+    padding: 0.5rem 0.875rem;
+    height: 60px;
+  }
+
+
+  .page-header-content {
+    max-width: 100%;
+  }
+
+
+  .page-title {
+    font-size: 0.98rem;
+  }
+
+
+  .reading-time {
+    font-size: 0.75rem;
+    padding: 0.22rem 0.65rem;
+  }
+
+
+  .content-wrapper {
+    max-width: 100%;
+    padding: 0.75rem;
+    padding-top: 76px;
+    padding-bottom: 4rem;
+  }
+
+
+  .content-container {
+    border-radius: 0.75rem;
+  }
+
+
+  .main-content {
+    padding: 1.25rem;
+  }
+
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+
+  h2 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    padding-left: 0.625rem;
+    border-left-width: 3px;
+  }
+
+
+  h3 {
+    font-size: 1.25rem;
+  }
+
+
+  h4 {
+    font-size: 1.0625rem;
+  }
+
+
+  h6 {
+    font-size: 0.9375rem;
+  }
+
+
+  p {
+    font-size: 1.0625rem;
+    margin-bottom: 1.125rem;
+  }
+
+
+  li {
+    font-size: 1.0625rem;
+    margin-bottom: 0.625rem;
+  }
+
+
+  .table-wrapper {
+    margin: 1.25rem -0.5rem;
+    border-radius: 0.625rem;
+  }
+
+
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+
+  thead tr {
+    display: none;
+  }
+
+
+  tbody tr {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--primary);
+    border-radius: 0.625rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+
+  tbody tr:last-child {
+    margin-bottom: 0;
+  }
+
+
+  td {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    border: none;
+    padding: 0.75rem 0;
+    font-size: 1rem;
+  }
+
+
+  td:not(:last-child) {
+    border-bottom: 1px solid var(--border-light);
+  }
+
+
+  td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--primary);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+
+  .content-image {
+    margin: 1.25rem -0.5rem;
+    border-radius: 0.625rem;
+  }
+
+
+  .content-image figcaption {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.8125rem;
+  }
+
+
+  h1, h2, h3, h4, h5, h6 {
+    scroll-margin-top: 8rem;
+  }
+
+
+  .toc-fab {
+    bottom: 24px;
+    right: 16px;
+    left: auto;
+    transform: translateY(10px);
+    min-width: 165px;
+    height: 52px;
+    font-size: 14px;
+    border-radius: 26px;
+    padding: 0 16px;
+    box-shadow: 0 18px 40px rgba(102, 126, 234, 0.7);
+    background: linear-gradient(
+      135deg,
+      #0fb9b1,
+      #2d98da
+    );
+  }
+
+
+  .toc-fab::before {
+    content: '';
+    margin-right: 0;
+  }
+
+
+  .toc-fab.show {
+    transform: translateY(0);
+  }
+
+
+  .floating-toc {
+    width: 90vw;
+    max-height: 70vh;
+  }
+
+
+  .whatsapp-fab {
+    top: 50px;
+    right: 14px;
+    width: 42px;
+    height: 42px;
+    font-size: 16px;
+  }
+
+    .share-fab {
+    top: 98px;
+    right: 14px;
+    width: 42px;
+    height: 42px;
+    font-size: 16px;
+  }
+
+}
+
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .content-wrapper {
+    padding: 1.5rem;
+    padding-top: 88px;
+  }
+
+
+  .main-content {
+    padding: 2rem;
+  }
+  
+  .toc-fab {
+    bottom: 28px;
+    right: 24px;
+    left: auto;
+    transform: translateY(10px);
+    min-width: 170px;
+    height: 52px;
+    font-size: 14px;
+  }
+
+
+  .toc-fab.show {
+    transform: translateY(0);
+  }
+}
+
+
+@media (min-width: 1025px) {
+  .content-wrapper {
+    padding: 2rem 1rem;
+    padding-top: 90px;
+  }
+
+
+  .main-content {
+    padding: 2.5rem;
+  }
+}
+
+
+@supports (padding: env(safe-area-inset-bottom)) {
+  .content-wrapper {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+@media print {
+  body {
+    background: white;
+  }
+
+
+  .page-header,
+  .whatsapp-fab,
+  .share-fab,
+  .toc-fab,
+  .floating-toc {
+    display: none !important;
+  }
+
+
+  .content-wrapper {
+    padding-top: 0 !important;
+  }
+
+
+  .content-container {
+    box-shadow: none;
+  }
+}
+
+.roamio-pill-cta {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  min-width: 56px;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(255, 107, 107, 0.5);
+  font-size: 14px;
+  font-weight: 650;
+  z-index: 999;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  -webkit-tap-highlight-color: transparent;
+  opacity: 0;
+  visibility: hidden;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  padding: 0;
+  white-space: nowrap;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 8px 24px rgba(255, 107, 107, 0.5);
+  }
+  50% {
+    box-shadow: 0 8px 32px rgba(255, 107, 107, 0.8);
+  }
+}
+
+.roamio-pill-cta.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.roamio-pill-cta:hover {
+  transform: translateX(-50%) translateY(-4px) scale(1.05);
+  box-shadow: 0 12px 32px rgba(255, 107, 107, 0.7);
+  animation: none;
+}
+
+.roamio-pill-cta:active {
+  transform: translateX(-50%) translateY(1px) scale(0.98);
+}
+
+.roamio-pill-cta svg {
+  width: 28px;
+  height: 28px;
+  transition: transform 0.2s;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.roamio-pill-cta:hover svg {
+  transform: scale(1.15) rotate(5deg);
+}
+
+.roamio-pill-cta::after {
+  content: 'Create your own';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  font-weight: 500;
+  z-index: 1;
+}
+
+.roamio-pill-cta:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-12px);
+}
+
+@media (max-width: 768px) {
+  .roamio-pill-cta {
+    bottom: 88px;
+    right: 16px;
+    left: auto;
+    transform: translateY(10px);
+  }
+
+  .roamio-pill-cta.show {
+    transform: translateY(0);
+  }
+
+  .roamio-pill-cta:hover {
+    transform: translateY(-3px) scale(1.05);
+  }
+
+  .roamio-pill-cta:active {
+    transform: translateY(1px) scale(0.98);
+  }
+  
+  .roamio-pill-cta::after {
+    display: none;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .roamio-pill-cta {
+    bottom: 92px;
+    right: 24px;
+    left: auto;
+    transform: translateY(10px);
+  }
+
+  .roamio-pill-cta.show {
+    transform: translateY(0);
+  }
+
+  .roamio-pill-cta:hover {
+    transform: translateY(-4px) scale(1.05);
+  }
+}
+
+@media print {
+  .roamio-pill-cta {
+    display: none !important;
+  }
+}
+
+
+/* Roamio Modal Styles */
+.roamio-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, visibility 0.15s ease; /* Changed from 0.3s to 0.15s */
+  padding: 1rem;
+}
+
+.roamio-modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.roamio-modal-content {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fc 100%);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 480px;
+  width: 100%;
+  padding: 2rem;
+  position: relative;
+  transform: scale(0.95) translateY(10px); /* Changed from scale(0.9) and translateY(20px) */
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); /* Changed from 0.3s ease, added bounce effect */
+}
+
+body.dark .roamio-modal-content {
+  background: linear-gradient(135deg, #1e2533 0%, #16213e 100%);
+}
+
+.roamio-modal-overlay.show .roamio-modal-content {
+  transform: scale(1) translateY(0);
+}
+
+.roamio-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease; /* Changed from 0.2s to 0.15s */
+  color: var(--text-secondary);
+}
+
+.roamio-modal-close:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transform: scale(1.1);
+}
+
+.roamio-modal-close:active {
+  transform: scale(0.95);
+}
+
+.roamio-modal-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.roamio-modal-icon {
+  margin: 0 auto 1rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.roamio-modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.roamio-modal-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.roamio-modal-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease; /* Changed from 0.3s to 0.2s */
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.roamio-modal-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+  opacity: 0;
+  transition: opacity 0.2s ease; /* Changed from 0.3s to 0.2s */
+}
+
+.roamio-modal-btn:hover::before {
+  opacity: 1;
+}
+
+.roamio-modal-btn:active {
+  transform: scale(0.98);
+}
+
+.roamio-modal-btn svg {
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.roamio-btn-label {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.roamio-btn-free {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.roamio-btn-free:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+}
+
+.roamio-btn-free:active {
+  transform: scale(0.98);
+}
+
+.roamio-btn-upgrade {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+  border: 2px solid rgba(251, 191, 36, 0.3);
+  transform: scale(1.03);
+}
+
+.roamio-btn-upgrade:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 24px rgba(245, 158, 11, 0.5);
+}
+
+.roamio-btn-upgrade:active {
+  transform: scale(1.01);
+}
+
+.roamio-btn-upgrade .roamio-btn-label {
+  font-size: 1.0625rem;
+}
+
+.roamio-btn-premium {
+  background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+  color: #1a1a2e;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.roamio-btn-premium svg {
+  fill: #1a1a2e;
+}
+
+.roamio-btn-premium:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+}
+
+.roamio-btn-premium:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 768px) {
+  .roamio-modal-content {
+    padding: 1.5rem;
+    max-width: 95%;
+  }
+  
+  .roamio-modal-title {
+    font-size: 1.25rem;
+  }
+  
+  .roamio-modal-btn {
+    padding: 0.875rem 1rem;
+  }
+  
+  .roamio-btn-label {
+    font-size: 0.9375rem;
+  }
+  
+  .roamio-btn-upgrade .roamio-btn-label {
+    font-size: 1rem;
+  }
+}
+
+@media print {
+  .roamio-modal-overlay {
+    display: none !important;
+  }
+}
+
+
+
+/* Header Logo */
+.header-logo-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  padding: 0.4rem;
+  border-radius: 0.5rem;
+  width: 44px;
+  height: 44px;
+}
+
+.header-logo-link:hover {
+  background: var(--gradient-subtle);
+  transform: scale(1.05);
+}
+
+.header-logo-icon {
+  width: 40px;
+  height: 40px;
+  color: var(--primary);
+  transition: transform 0.2s ease;
+}
+
+.header-logo-link:hover .header-logo-icon {
+  transform: rotate(-8deg);
+}
+
+@media (max-width: 768px) {
+  .header-logo-link {
+    width: 40px;
+    height: 40px;
+    padding: 0.3rem;
+  }
+  
+  .header-logo-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="scroll-progress"></div>
+<header class="page-header" id="page-header">
+  <div class="page-header-content">
+    <div class="page-header-left">
+      <a href="https://roamio.travel" class="header-logo-link" target="_blank" rel="noopener noreferrer" title="Visit Roamio">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-logo-icon">
+          <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>
+        </svg>
+      </a>
+      <h1 class="page-title">Initial Itinerary</h1>
+    </div>
+  </div>
+  <div class="page-header-underline"></div>
+</header>
+<button class="whatsapp-fab" onclick="openWhatsAppSupport()" aria-label="WhatsApp Support" title="Chat with us on WhatsApp">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488" fill="currentColor"/>
+  </svg>
+</button>
+<button class="share-fab" onclick="shareItinerary()" aria-label="Share itinerary">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 8C19.6569 8 21 6.65685 21 5C21 3.34315 19.6569 2 18 2C16.3431 2 15 3.34315 15 5C15 5.12548 15.0077 5.24917 15.0227 5.37061L8.08259 9.19346C7.54305 8.46898 6.71957 8 5.79412 8C4.13726 8 2.79412 9.34315 2.79412 11C2.79412 12.6569 4.13726 14 5.79412 14C6.71957 14 7.54305 13.531 8.08259 12.8065L15.0227 16.6294C15.0077 16.7508 15 16.8745 15 17C15 18.6569 16.3431 20 18 20C19.6569 20 21 18.6569 21 17C21 15.3431 19.6569 14 18 14C17.0746 14 16.2511 14.469 15.7116 15.1935L8.77145 11.3706C8.78647 11.2492 8.79412 11.1255 8.79412 11C8.79412 10.8745 8.78647 10.7508 8.77145 10.6294L15.7116 6.80654C16.2511 7.53102 17.0746 8 18 8Z" fill="white"/>
+  </svg>
+</button>
+<button class="toc-fab" onclick="toggleFloatingTOC()" aria-label="Toggle Table of Contents">📋 Contents</button>
+<div class="content-wrapper">
+  <div class="content-container">
+    <main class="main-content">
+      <h2 id="quick-glance-summary-example" data-section="quick-glance-summary-example">📊👀 Quick Glance Summary Example</h2>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+  <th>Destination</th>
+  <th>Nights</th>
+  <th>Activities</th>
+  <th>Visa Info</th>
+  <th>Images</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td data-label="Destination">Tokyo 🗼</td>
+  <td data-label="Nights">4</td>
+  <td data-label="Activities">Shibuya Crossing 🚦, TeamLab Borderless 🎨, Shinjuku Gyoen 🌸</td>
+  <td data-label="Visa Info">eVisa required 📝</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Tokyo</div>
+          <img src="https://images.unsplash.com/photo-1513407030348-c983a97b98d8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxUb2t5b3xlbnwwfDB8fHwxNzY3MDAzNDg1fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Louie Martinez" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@thetalkinglens?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Louie Martinez</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Tokyo</div>
+          <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxUb2t5b3xlbnwwfDB8fHwxNzY3MDAzNDg1fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Jezael Melgoza" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@jezar?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Jezael Melgoza</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Tokyo</div>
+          <img src="https://images.unsplash.com/photo-1549693578-d683be217e58?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxUb2t5b3xlbnwwfDB8fHwxNzY3MDAzNDg1fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Jezael Melgoza" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@jezar?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Jezael Melgoza</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Tokyo</div>
+          <img src="https://images.unsplash.com/photo-1604928141064-207cea6f571f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw0fHxUb2t5b3xlbnwwfDB8fHwxNzY3MDAzNDg1fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Takashi Miyazaki" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@miyatankun?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Takashi Miyazaki</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Tokyo</div>
+          <img src="https://images.unsplash.com/photo-1557409518-691ebcd96038?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw1fHxUb2t5b3xlbnwwfDB8fHwxNzY3MDAzNDg1fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Yu Kato" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@yukato?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Yu Kato</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Tokyo</div>
+          <img src="https://images.unsplash.com/photo-1551322120-c697cf88fbdc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw2fHxUb2t5b3xlbnwwfDB8fHwxNzY3MDAzNDg1fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Jaison Lin" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@jaison333?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Jaison Lin</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Destination">Hakone 🌋</td>
+  <td data-label="Nights">2</td>
+  <td data-label="Activities">Mt. Fuji views 🗻, Lake Ashi cruise 🚢, Onsen relaxation ♨️</td>
+  <td data-label="Visa Info">eVisa required 📝</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hakone</div>
+          <img src="https://images.unsplash.com/photo-1583901362846-13c55e045708?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxIYWtvbmV8ZW58MHwwfHx8MTc2NzAwMzQ4Nnww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Yusheng Deng" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@akiradeng?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Yusheng Deng</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hakone</div>
+          <img src="https://images.unsplash.com/photo-1568901002433-5a8ceafe4647?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxIYWtvbmV8ZW58MHwwfHx8MTc2NzAwMzQ4Nnww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Sravan V" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@sravan_v?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Sravan V</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hakone</div>
+          <img src="https://images.unsplash.com/photo-1631488408876-2dc3a7312657?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxIYWtvbmV8ZW58MHwwfHx8MTc2NzAwMzQ4Nnww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Steve Sharp" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@sharp3?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Steve Sharp</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hakone</div>
+          <img src="https://images.unsplash.com/photo-1576397753762-206624e9a2cc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw0fHxIYWtvbmV8ZW58MHwwfHx8MTc2NzAwMzQ4Nnww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Kunal Sahu" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@kunalsahu?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Kunal Sahu</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hakone</div>
+          <img src="https://images.unsplash.com/photo-1583901580846-5045902c1033?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw1fHxIYWtvbmV8ZW58MHwwfHx8MTc2NzAwMzQ4Nnww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Yusheng Deng" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@akiradeng?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Yusheng Deng</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hakone</div>
+          <img src="https://images.unsplash.com/photo-1492571350019-22de08371fd3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw2fHxIYWtvbmV8ZW58MHwwfHx8MTc2NzAwMzQ4Nnww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Tianshu Liu" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@tianshu?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Tianshu Liu</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Destination">Takayama 🏮</td>
+  <td data-label="Nights">2</td>
+  <td data-label="Activities">Old Town Sanmachi 🏘️, Hida Folk Village 🛖</td>
+  <td data-label="Visa Info">eVisa required 📝</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Takayama</div>
+          <img src="https://images.unsplash.com/photo-1676917350107-964194678afa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxUYWtheWFtYXxlbnwwfDB8fHwxNzY3MDAzNDg2fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Rogério Toledo" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@rogeriotoledo?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Rogério Toledo</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Takayama</div>
+          <img src="https://images.unsplash.com/photo-1616666720738-0f4dbf0d3e9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxUYWtheWFtYXxlbnwwfDB8fHwxNzY3MDAzNDg2fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Lucas Calloch" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@dreiimos?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Lucas Calloch</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Takayama</div>
+          <img src="https://images.unsplash.com/photo-1593297158337-144247bdfdec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxUYWtheWFtYXxlbnwwfDB8fHwxNzY3MDAzNDg2fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Vladimir Haltakov" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@haltakov?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Vladimir Haltakov</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Takayama</div>
+          <img src="https://images.unsplash.com/photo-1610333529589-727a858ed911?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw0fHxUYWtheWFtYXxlbnwwfDB8fHwxNzY3MDAzNDg2fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Lucas Calloch" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@dreiimos?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Lucas Calloch</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Takayama</div>
+          <img src="https://images.unsplash.com/photo-1676917349771-caadd4fd1684?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw1fHxUYWtheWFtYXxlbnwwfDB8fHwxNzY3MDAzNDg2fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Rogério Toledo" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@rogeriotoledo?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Rogério Toledo</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Takayama</div>
+          <img src="https://images.unsplash.com/photo-1676917349790-adde3abfbde5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw2fHxUYWtheWFtYXxlbnwwfDB8fHwxNzY3MDAzNDg2fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Rogério Toledo" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@rogeriotoledo?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Rogério Toledo</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Destination">Kanazawa 🏯</td>
+  <td data-label="Nights">2</td>
+  <td data-label="Activities">Kenrokuen Garden 🌳, Higashi Chaya District 🍵</td>
+  <td data-label="Visa Info">eVisa required 📝</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kanazawa</div>
+          <img src="https://images.unsplash.com/photo-1687355358866-c9ff1ed350eb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxLYW5hemF3YXxlbnwwfDB8fHwxNzY3MDAzNDg3fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Tunafish" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@ultratunafish?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Tunafish</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kanazawa</div>
+          <img src="https://images.unsplash.com/photo-1720792445193-7e288489b292?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxLYW5hemF3YXxlbnwwfDB8fHwxNzY3MDAzNDg3fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Sunao Noguchi" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@fwm3u?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Sunao Noguchi</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kanazawa</div>
+          <img src="https://images.unsplash.com/photo-1560935044-1f25ce5380e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxLYW5hemF3YXxlbnwwfDB8fHwxNzY3MDAzNDg3fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Robby McCullough" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@mybbor?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Robby McCullough</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kanazawa</div>
+          <img src="https://images.unsplash.com/photo-1705333079221-3f0a238bac32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw0fHxLYW5hemF3YXxlbnwwfDB8fHwxNzY3MDAzNDg3fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Roméo A." loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@gronemo?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Roméo A.</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kanazawa</div>
+          <img src="https://images.unsplash.com/photo-1593297218302-17e1aa0aec21?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw1fHxLYW5hemF3YXxlbnwwfDB8fHwxNzY3MDAzNDg3fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Vladimir Haltakov" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@haltakov?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Vladimir Haltakov</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kanazawa</div>
+          <img src="https://images.unsplash.com/photo-1732394307016-e12dff264ba8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw2fHxLYW5hemF3YXxlbnwwfDB8fHwxNzY3MDAzNDg3fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Marek Piwnicki" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@marekpiwnicki?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Marek Piwnicki</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Destination">Kyoto ⛩️</td>
+  <td data-label="Nights">4</td>
+  <td data-label="Activities">Fushimi Inari ⛩️, Arashiyama Bamboo Grove 🎋, Gion District 👘</td>
+  <td data-label="Visa Info">eVisa required 📝</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kyoto</div>
+          <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxLeW90b3xlbnwwfDB8fHwxNzY3MDAzNDg4fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Sorasak" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@boontohhgraphy?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Sorasak</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kyoto</div>
+          <img src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxLeW90b3xlbnwwfDB8fHwxNzY3MDAzNDg4fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Su San Lee" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@blackodc?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Su San Lee</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kyoto</div>
+          <img src="https://images.unsplash.com/photo-1558862107-d49ef2a04d72?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxLeW90b3xlbnwwfDB8fHwxNzY3MDAzNDg4fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by David Emrich" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@davidemrich?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">David Emrich</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kyoto</div>
+          <img src="https://images.unsplash.com/photo-1578469645742-46cae010e5d4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw0fHxLeW90b3xlbnwwfDB8fHwxNzY3MDAzNDg4fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Cosmin Georgian" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@cosmingeorgian?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Cosmin Georgian</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kyoto</div>
+          <img src="https://images.unsplash.com/photo-1526481280693-3bfa7568e0f3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw1fHxLeW90b3xlbnwwfDB8fHwxNzY3MDAzNDg4fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by David Edelstein" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@jlhopes?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">David Edelstein</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kyoto</div>
+          <img src="https://images.unsplash.com/photo-1581536763020-d2d7cfdd4df6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw2fHxLeW90b3xlbnwwfDB8fHwxNzY3MDAzNDg4fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Kristin Wilson" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@kristinwilson?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Kristin Wilson</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Destination">Osaka 🏙️</td>
+  <td data-label="Nights">3</td>
+  <td data-label="Activities">Dotonbori food 🍜, Osaka Castle 🏯, Universal Studios 🎢</td>
+  <td data-label="Visa Info">eVisa required 📝</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Osaka</div>
+          <img src="https://images.unsplash.com/photo-1589452271712-64b8a66c7b71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxPc2FrYXxlbnwwfDB8fHwxNzY3MDAzNDg5fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Nomadic Julien" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@nomadicjulien?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Nomadic Julien</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Osaka</div>
+          <img src="https://images.unsplash.com/photo-1584505489290-96eb4e406d08?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxPc2FrYXxlbnwwfDB8fHwxNzY3MDAzNDg5fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Juliana Barquero" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@juliebaa?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Juliana Barquero</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Osaka</div>
+          <img src="https://images.unsplash.com/photo-1596240748549-6ec0f32d4c95?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxPc2FrYXxlbnwwfDB8fHwxNzY3MDAzNDg5fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Jeremy Santana" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@strikevillain?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Jeremy Santana</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Osaka</div>
+          <img src="https://images.unsplash.com/photo-1590253230532-a67f6bc61c9e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw0fHxPc2FrYXxlbnwwfDB8fHwxNzY3MDAzNDg5fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Richard Tao" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@richardtao28?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Richard Tao</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Osaka</div>
+          <img src="https://images.unsplash.com/photo-1560291544-515e5417bddb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw1fHxPc2FrYXxlbnwwfDB8fHwxNzY3MDAzNDg5fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Robby McCullough" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@mybbor?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Robby McCullough</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Osaka</div>
+          <img src="https://images.unsplash.com/photo-1571242352061-7611fbafbd42?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw2fHxPc2FrYXxlbnwwfDB8fHwxNzY3MDAzNDg5fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by miram Oh" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@talking_dolphin?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">miram Oh</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Destination">Hiroshima 🕊️</td>
+  <td data-label="Nights">2</td>
+  <td data-label="Activities">Peace Memorial Park 🕊️, Itsukushima Shrine ⛩️</td>
+  <td data-label="Visa Info">eVisa required 📝</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hiroshima</div>
+          <img src="https://images.unsplash.com/photo-1574773774523-c8007253ef49?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxIaXJvc2hpbWF8ZW58MHwwfHx8MTc2NzAwMzQ5MHww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Rap Dela Rea" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@rapdelarea?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Rap Dela Rea</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hiroshima</div>
+          <img src="https://images.unsplash.com/photo-1697605623014-c68d4b666420?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxIaXJvc2hpbWF8ZW58MHwwfHx8MTc2NzAwMzQ5MHww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Desmond Tawiah" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@pappyrazi?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Desmond Tawiah</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hiroshima</div>
+          <img src="https://images.unsplash.com/photo-1719360569943-310d65648d37?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxIaXJvc2hpbWF8ZW58MHwwfHx8MTc2NzAwMzQ5MHww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Patrick Nguyen" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@pokiepatt?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Patrick Nguyen</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hiroshima</div>
+          <img src="https://images.unsplash.com/photo-1650219813736-d823a037af22?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw0fHxIaXJvc2hpbWF8ZW58MHwwfHx8MTc2NzAwMzQ5MHww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Skaterlunatic" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@skaterlunatic?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Skaterlunatic</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hiroshima</div>
+          <img src="https://images.unsplash.com/photo-1504109586057-7a2ae83d1338?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw1fHxIaXJvc2hpbWF8ZW58MHwwfHx8MTc2NzAwMzQ5MHww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Nicki Eliza Schinow" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@nicki_schinow?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Nicki Eliza Schinow</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hiroshima</div>
+          <img src="https://images.unsplash.com/photo-1559998551-19a349e9677b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw2fHxIaXJvc2hpbWF8ZW58MHwwfHx8MTc2NzAwMzQ5MHww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Beau Swierstra" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@vananaarbeau?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Beau Swierstra</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Destination">Nara 🦌</td>
+  <td data-label="Nights">2</td>
+  <td data-label="Activities">Todai-ji Temple 🏯, Deer Park 🦌, Kasuga Taisha 🏮</td>
+  <td data-label="Visa Info">eVisa required 📝</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Nara</div>
+          <img src="https://images.unsplash.com/photo-1550303435-1703d8811aaa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxOYXJhfGVufDB8MHx8fDE3NjcwMDM0OTF8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Timo Volz" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@magict1911?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Timo Volz</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Nara</div>
+          <img src="https://images.unsplash.com/photo-1530708780517-cc640cf05561?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxOYXJhfGVufDB8MHx8fDE3NjcwMDM0OTF8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Joey Huang" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@onice?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Joey Huang</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Nara</div>
+          <img src="https://images.unsplash.com/photo-1610026386855-e01404c45a63?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxOYXJhfGVufDB8MHx8fDE3NjcwMDM0OTF8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Jo Sorgenfri" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@jo_sorgenfri?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Jo Sorgenfri</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Nara</div>
+          <img src="https://images.unsplash.com/photo-1578507080088-e843868f8f13?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw0fHxOYXJhfGVufDB8MHx8fDE3NjcwMDM0OTF8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Worachat Sodsri" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@worachatsodsri?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Worachat Sodsri</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Nara</div>
+          <img src="https://images.unsplash.com/photo-1537153725174-cba5e5e81ab0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw1fHxOYXJhfGVufDB8MHx8fDE3NjcwMDM0OTF8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Agathe" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@agathe_26?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Agathe</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Nara</div>
+          <img src="https://images.unsplash.com/photo-1593297304752-7ca5864360f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw2fHxOYXJhfGVufDB8MHx8fDE3NjcwMDM0OTF8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Vladimir Haltakov" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@haltakov?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Vladimir Haltakov</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+</tbody>
+</table></div>
+<strong>Total Trip Cost (Always Inclusive):</strong> ₹685,000 group / ₹342,500 per person (Moderate Budget 💰, <strong>Displayed in INR</strong>)
+<hr>
+<h2 id="itinerary-breakdown" data-section="itinerary-breakdown">📝🗓️ Itinerary Breakdown</h2>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+  <th>Day(s) & Date(s)</th>
+  <th>Place</th>
+  <th>Experience</th>
+  <th>Images</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td data-label="Day(s) & Date(s)">Day 1 (May 1, Arrival)</td>
+  <td data-label="Place">Tokyo 🗼</td>
+  <td data-label="Experience">Arrive ✈️, evening walk in Shinjuku, local Ramen dinner 🍜</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Shinjuku</div>
+          <img src="https://images.unsplash.com/photo-1532236395709-7d70320fec2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxTaGluanVrdXxlbnwwfDB8fHwxNzY3MDAzNDcwfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Jezael Melgoza" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@jezar?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Jezael Melgoza</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Shinjuku</div>
+          <img src="https://images.unsplash.com/photo-1551321850-378113a4155b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxTaGluanVrdXxlbnwwfDB8fHwxNzY3MDAzNDcwfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Jaison Lin" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@jaison333?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Jaison Lin</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Shinjuku</div>
+          <img src="https://images.unsplash.com/photo-1617870314635-fc819547ec11?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxTaGluanVrdXxlbnwwfDB8fHwxNzY3MDAzNDcwfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Pema G. Lama" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@peemaglama?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Pema G. Lama</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Day(s) & Date(s)">Day 2–4 (May 2–4)</td>
+  <td data-label="Place">Tokyo 🗼</td>
+  <td data-label="Experience">Shibuya Crossing 🚦, Meiji Jingu ⛩️, TeamLab Planets 🌌, Harajuku 🍭</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Shibuya Crossing</div>
+          <img src="https://images.unsplash.com/photo-1547448526-5e9d57fa28f7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxTaGlidXlhJTIwQ3Jvc3Npbmd8ZW58MHwwfHx8MTc2NzAwMzQ3MXww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Timo Volz" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@magict1911?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Timo Volz</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Shibuya Crossing</div>
+          <img src="https://images.unsplash.com/photo-1695011046703-90e1f9f3ba85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxTaGlidXlhJTIwQ3Jvc3Npbmd8ZW58MHwwfHx8MTc2NzAwMzQ3MXww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Timo Volz" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@magict1911?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Timo Volz</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Shibuya Crossing</div>
+          <img src="https://images.unsplash.com/photo-1586963312987-3c96f9ace15a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxTaGlidXlhJTIwQ3Jvc3Npbmd8ZW58MHwwfHx8MTc2NzAwMzQ3MXww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Daryan Shamkhali" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@daryan?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Daryan Shamkhali</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">TeamLab Planets</div>
+          <img src="https://images.unsplash.com/photo-1556173251-cab2c1e8abe2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxUZWFtTGFiJTIwUGxhbmV0c3xlbnwwfDB8fHwxNzY3MDAzNDcxfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Karsten Gohm" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@kasn?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Karsten Gohm</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">TeamLab Planets</div>
+          <img src="https://images.unsplash.com/photo-1617538038644-46c8917e9938?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxUZWFtTGFiJTIwUGxhbmV0c3xlbnwwfDB8fHwxNzY3MDAzNDcxfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by mtsjrdl" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@mtsjrdl?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">mtsjrdl</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">TeamLab Planets</div>
+          <img src="https://images.unsplash.com/photo-1726457433951-929c7d7939ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxUZWFtTGFiJTIwUGxhbmV0c3xlbnwwfDB8fHwxNzY3MDAzNDcxfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Taisia Karaseva" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@taisiat?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Taisia Karaseva</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Day(s) & Date(s)">Day 5 (May 5)</td>
+  <td data-label="Place">Tokyo → Hakone 🌋</td>
+  <td data-label="Experience">Shinkansen 🚄, Hakone Ropeway, Owakudani volcanic valley 💨</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hakone Ropeway</div>
+          <img src="https://images.unsplash.com/photo-1631069615023-f78f564420d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxIYWtvbmUlMjBSb3Bld2F5fGVufDB8MHx8fDE3NjcwMDM0NzJ8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by K Soma" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@ksoma?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">K Soma</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hakone Ropeway</div>
+          <img src="https://images.unsplash.com/photo-1565708617992-13ba1361404d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxIYWtvbmUlMjBSb3Bld2F5fGVufDB8MHx8fDE3NjcwMDM0NzJ8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Jenna Neal" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@jennanicolephotos_?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Jenna Neal</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hakone Ropeway</div>
+          <img src="https://images.unsplash.com/photo-1715429957695-f333b2949961?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxIYWtvbmUlMjBSb3Bld2F5fGVufDB8MHx8fDE3NjcwMDM0NzJ8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Ikarovski" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@ikarovski?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Ikarovski</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Owakudani</div>
+          <img src="https://images.unsplash.com/photo-1583901342520-0ce87c2750a8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxPd2FrdWRhbml8ZW58MHwwfHx8MTc2NzAwMzQ3Mnww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Yusheng Deng" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@akiradeng?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Yusheng Deng</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Owakudani</div>
+          <img src="https://images.unsplash.com/photo-1583901362846-13c55e045708?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxPd2FrdWRhbml8ZW58MHwwfHx8MTc2NzAwMzQ3Mnww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Yusheng Deng" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@akiradeng?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Yusheng Deng</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Owakudani</div>
+          <img src="https://images.unsplash.com/photo-1683995308309-5cd9940265a6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxPd2FrdWRhbml8ZW58MHwwfHx8MTc2NzAwMzQ3Mnww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Snowscat" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@snowscat?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Snowscat</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Day(s) & Date(s)">Day 6 (May 6)</td>
+  <td data-label="Place">Hakone 🌋</td>
+  <td data-label="Experience">Lake Ashi pirate ship 🚢, Open Air Museum, Onsen spa ♨️</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Lake Ashi Cruise</div>
+          <img src="https://images.unsplash.com/photo-1725025044122-fd000fa8c04f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxMYWtlJTIwQXNoaSUyMENydWlzZXxlbnwwfDB8fHwxNzY3MDAzNDczfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Harsil Patel" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@harsilspatel?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Harsil Patel</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Lake Ashi Cruise</div>
+          <img src="https://images.unsplash.com/photo-1726456357343-95137bd8a065?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxMYWtlJTIwQXNoaSUyMENydWlzZXxlbnwwfDB8fHwxNzY3MDAzNDczfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Taisia Karaseva" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@taisiat?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Taisia Karaseva</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Lake Ashi Cruise</div>
+          <img src="https://images.unsplash.com/photo-1753702988417-216889e93a6c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxMYWtlJTIwQXNoaSUyMENydWlzZXxlbnwwfDB8fHwxNzY3MDAzNDczfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Kyle Yen" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@yenkyle?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Kyle Yen</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hakone Open Air Museum</div>
+          <img src="https://images.unsplash.com/photo-1661997405495-d3ba07ad7cbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxIYWtvbmUlMjBPcGVuJTIwQWlyJTIwTXVzZXVtfGVufDB8MHx8fDE3NjcwMDM0NzN8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Leo Okuyama" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@okuyama_leo?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Leo Okuyama</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hakone Open Air Museum</div>
+          <img src="https://images.unsplash.com/photo-1715429957695-f333b2949961?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxIYWtvbmUlMjBPcGVuJTIwQWlyJTIwTXVzZXVtfGVufDB8MHx8fDE3NjcwMDM0NzN8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Ikarovski" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@ikarovski?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Ikarovski</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hakone Open Air Museum</div>
+          <img src="https://images.unsplash.com/photo-1716726321644-f9a0a6a93378?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxIYWtvbmUlMjBPcGVuJTIwQWlyJTIwTXVzZXVtfGVufDB8MHx8fDE3NjcwMDM0NzN8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Nico Knaack" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@xoxnk?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Nico Knaack</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Day(s) & Date(s)">Day 7 (May 7)</td>
+  <td data-label="Place">Hakone → Takayama 🏮</td>
+  <td data-label="Experience">Scenic train to Hida mountains, Sanmachi Suji historic walk 🏘️</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Sanmachi Suji</div>
+          <img src="https://images.unsplash.com/photo-1728997969565-0ed28149d812?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxTYW5tYWNoaSUyMFN1aml8ZW58MHwwfHx8MTc2NzAwMzQ3NHww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by IRa Kang" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@lifeinkorea?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">IRa Kang</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Sanmachi Suji</div>
+          <img src="https://images.unsplash.com/photo-1723454098961-ebdbed6f880e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxTYW5tYWNoaSUyMFN1aml8ZW58MHwwfHx8MTc2NzAwMzQ3NHww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Tk" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@deltafilm12_?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Tk</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Sanmachi Suji</div>
+          <img src="https://images.unsplash.com/photo-1761547735473-90945aff2c3c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxTYW5tYWNoaSUyMFN1aml8ZW58MHwwfHx8MTc2NzAwMzQ3NHww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by yanbin zhou" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@b1n_1100010?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">yanbin zhou</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Day(s) & Date(s)">Day 8 (May 8)</td>
+  <td data-label="Place">Takayama 🏮</td>
+  <td data-label="Experience">Morning Market 🍎, Hida Folk Village, Sake tasting 🍶</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hida Folk Village</div>
+          <img src="https://images.unsplash.com/photo-1764106045924-521062e99e29?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxIaWRhJTIwRm9sayUyMFZpbGxhZ2V8ZW58MHwwfHx8MTc2NzAwMzQ3NXww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Mehrpouya H" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@mehrpouya?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Mehrpouya H</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hida Folk Village</div>
+          <img src="https://images.unsplash.com/photo-1723377434959-3e65b79b04d4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxIaWRhJTIwRm9sayUyMFZpbGxhZ2V8ZW58MHwwfHx8MTc2NzAwMzQ3NXww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Artists Eyes" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@artistseyes?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Artists Eyes</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hida Folk Village</div>
+          <img src="https://images.unsplash.com/photo-1713164835905-5d00fbdaa612?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxIaWRhJTIwRm9sayUyMFZpbGxhZ2V8ZW58MHwwfHx8MTc2NzAwMzQ3NXww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Annie Spratt" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@anniespratt?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Annie Spratt</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Takayama Morning Market</div>
+          <img src="https://images.unsplash.com/photo-1688092808094-942e9e085c62?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxUYWtheWFtYSUyME1vcm5pbmclMjBNYXJrZXR8ZW58MHwwfHx8MTc2NzAwMzQ3NXww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Suzi Kim" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@kimsuzi08?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Suzi Kim</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Takayama Morning Market</div>
+          <img src="https://images.unsplash.com/photo-1701009203181-da4db8a9c4e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxUYWtheWFtYSUyME1vcm5pbmclMjBNYXJrZXR8ZW58MHwwfHx8MTc2NzAwMzQ3NXww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Huy Phan" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@huyphan2602?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Huy Phan</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Takayama Morning Market</div>
+          <img src="https://images.unsplash.com/photo-1537155535180-42986fc6da07?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxUYWtheWFtYSUyME1vcm5pbmclMjBNYXJrZXR8ZW58MHwwfHx8MTc2NzAwMzQ3NXww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by rawkkim" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@rawkkim?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">rawkkim</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Day(s) & Date(s)">Day 9 (May 9)</td>
+  <td data-label="Place">Takayama → Kanazawa 🏯</td>
+  <td data-label="Experience">Bus to Shirakawa-go (UNESCO) 🛖, arrive Kanazawa evening</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Shirakawa-go</div>
+          <img src="https://images.unsplash.com/photo-1584805688284-05fe38f95b3b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxTaGlyYWthd2EtZ298ZW58MHwwfHx8MTc2NzAwMzQ3NXww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Laurent Gence" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@lgence?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Laurent Gence</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Shirakawa-go</div>
+          <img src="https://images.unsplash.com/photo-1680946733488-f5f4655e40ad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxTaGlyYWthd2EtZ298ZW58MHwwfHx8MTc2NzAwMzQ3NXww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Deepavali Gaind" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@deepavalig?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Deepavali Gaind</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Shirakawa-go</div>
+          <img src="https://images.unsplash.com/photo-1709364653070-85e40204b1e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxTaGlyYWthd2EtZ298ZW58MHwwfHx8MTc2NzAwMzQ3NXww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Dwayne Sanson Tin" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@dwaynetin?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Dwayne Sanson Tin</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Day(s) & Date(s)">Day 10 (May 10)</td>
+  <td data-label="Place">Kanazawa 🏯</td>
+  <td data-label="Experience">Kenrokuen Garden 🌳, Nomura Samurai House, Omicho Market 🍣</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kenrokuen Garden</div>
+          <img src="https://images.unsplash.com/photo-1669380981740-18db28620b8b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxLZW5yb2t1ZW4lMjBHYXJkZW58ZW58MHwwfHx8MTc2NzAwMzQ3Nnww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Ikko Nishimura" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@ikko_nikko_sanko?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Ikko Nishimura</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kenrokuen Garden</div>
+          <img src="https://images.unsplash.com/photo-1627304827615-3a05fafaed7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxLZW5yb2t1ZW4lMjBHYXJkZW58ZW58MHwwfHx8MTc2NzAwMzQ3Nnww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Leo Okuyama" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@okuyama_leo?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Leo Okuyama</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kenrokuen Garden</div>
+          <img src="https://images.unsplash.com/photo-1637846931849-d1748990481b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxLZW5yb2t1ZW4lMjBHYXJkZW58ZW58MHwwfHx8MTc2NzAwMzQ3Nnww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Dino Johannes" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@dinoj?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Dino Johannes</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Omicho Market</div>
+          <img src="https://images.unsplash.com/photo-1599556035229-b56b6648b285?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxPbWljaG8lMjBNYXJrZXR8ZW58MHwwfHx8MTc2NzAwMzQ3Nnww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Poppy Lin" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@poppylinqin?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Poppy Lin</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Omicho Market</div>
+          <img src="https://images.unsplash.com/photo-1721011793681-abf40cebff04?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxPbWljaG8lMjBNYXJrZXR8ZW58MHwwfHx8MTc2NzAwMzQ3Nnww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Omoniyi David" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@mocream_coffee?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Omoniyi David</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Omicho Market</div>
+          <img src="https://images.unsplash.com/photo-1749938505996-93a421dd09c0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxPbWljaG8lMjBNYXJrZXR8ZW58MHwwfHx8MTc2NzAwMzQ3Nnww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Matheus Oliveira" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@matheus_oliveira?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Matheus Oliveira</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Day(s) & Date(s)">Day 11 (May 11)</td>
+  <td data-label="Place">Kanazawa → Kyoto ⛩️</td>
+  <td data-label="Experience">Express train 🚄, evening Gion walk, Geisha spotting 👘</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Gion District</div>
+          <img src="https://images.unsplash.com/photo-1717649389730-ba6d16053b43?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxHaW9uJTIwRGlzdHJpY3R8ZW58MHwwfHx8MTc2NzAwMzQ3N3ww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Leo Bayard" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@leob_photography?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Leo Bayard</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Gion District</div>
+          <img src="https://images.unsplash.com/photo-1613488219365-0ffa7515c19e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxHaW9uJTIwRGlzdHJpY3R8ZW58MHwwfHx8MTc2NzAwMzQ3N3ww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Stefan K" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@stefankst?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Stefan K</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Gion District</div>
+          <img src="https://images.unsplash.com/photo-1547647496-1ef40ef62bc4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxHaW9uJTIwRGlzdHJpY3R8ZW58MHwwfHx8MTc2NzAwMzQ3N3ww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Han Min T" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@atlas147?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Han Min T</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Day(s) & Date(s)">Day 12–14 (May 12–14)</td>
+  <td data-label="Place">Kyoto ⛩️</td>
+  <td data-label="Experience">Kinkaku-ji (Golden Pavilion) 🏯, Fushimi Inari gates ⛩️, Arashiyama 🎋</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kinkaku-ji</div>
+          <img src="https://images.unsplash.com/photo-1609549127676-17d277189a2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxLaW5rYWt1LWppfGVufDB8MHx8fDE3NjcwMDM0Nzh8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Jean-Claude Dumont" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@jcd8?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Jean-Claude Dumont</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kinkaku-ji</div>
+          <img src="https://images.unsplash.com/photo-1573958531770-3ee233b656c0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxLaW5rYWt1LWppfGVufDB8MHx8fDE3NjcwMDM0Nzh8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Cici Hung" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@cici9265?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Cici Hung</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kinkaku-ji</div>
+          <img src="https://images.unsplash.com/photo-1573973726150-13711638e4e0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxLaW5rYWt1LWppfGVufDB8MHx8fDE3NjcwMDM0Nzh8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Cici Hung" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@cici9265?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Cici Hung</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Arashiyama Bamboo Grove</div>
+          <img src="https://images.unsplash.com/photo-1632923754832-60642c12a7ed?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxBcmFzaGl5YW1hJTIwQmFtYm9vJTIwR3JvdmV8ZW58MHwwfHx8MTc2NzAwMzQ3OHww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by DuoNguyen" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@duonguyen?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">DuoNguyen</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Arashiyama Bamboo Grove</div>
+          <img src="https://images.unsplash.com/photo-1511364033374-07ffa0c99c4c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxBcmFzaGl5YW1hJTIwQmFtYm9vJTIwR3JvdmV8ZW58MHwwfHx8MTc2NzAwMzQ3OHww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Matteo Ferrero" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@thessd?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Matteo Ferrero</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Arashiyama Bamboo Grove</div>
+          <img src="https://images.unsplash.com/photo-1698618988744-737573cb6a7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxBcmFzaGl5YW1hJTIwQmFtYm9vJTIwR3JvdmV8ZW58MHwwfHx8MTc2NzAwMzQ3OHww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Fynn Geerdsen" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@fynngeerdsen?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Fynn Geerdsen</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Day(s) & Date(s)">Day 15 (May 15)</td>
+  <td data-label="Place">Kyoto → Osaka 🏙️</td>
+  <td data-label="Experience">Short train 🚄, Dotonbori street food 🐙, Umeda Sky Building 🌃</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Dotonbori</div>
+          <img src="https://images.unsplash.com/photo-1542210940661-5f91cb7afe02?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxEb3RvbmJvcml8ZW58MHwwfHx8MTc2NzAwMzQ3OXww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Ramon Kagie" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@ramonkagie?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Ramon Kagie</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Dotonbori</div>
+          <img src="https://images.unsplash.com/photo-1590253230532-a67f6bc61c9e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxEb3RvbmJvcml8ZW58MHwwfHx8MTc2NzAwMzQ3OXww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Richard Tao" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@richardtao28?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Richard Tao</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Dotonbori</div>
+          <img src="https://images.unsplash.com/photo-1713925104997-2786602b1313?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxEb3RvbmJvcml8ZW58MHwwfHx8MTc2NzAwMzQ3OXww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Kiko K" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@kskoo626?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Kiko K</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Umeda Sky Building</div>
+          <img src="https://images.unsplash.com/photo-1712542864632-2e8a275efdae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxVbWVkYSUyMFNreSUyMEJ1aWxkaW5nfGVufDB8MHx8fDE3NjcwMDM0Nzl8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Dmitry Romanoff" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@dm8ryphotos?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Dmitry Romanoff</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Umeda Sky Building</div>
+          <img src="https://images.unsplash.com/photo-1712542697498-e48412fe0591?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxVbWVkYSUyMFNreSUyMEJ1aWxkaW5nfGVufDB8MHx8fDE3NjcwMDM0Nzl8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Dmitry Romanoff" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@dm8ryphotos?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Dmitry Romanoff</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Umeda Sky Building</div>
+          <img src="https://images.unsplash.com/photo-1598559411608-e6dddb68e5f4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxVbWVkYSUyMFNreSUyMEJ1aWxkaW5nfGVufDB8MHx8fDE3NjcwMDM0Nzl8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Paul Cuoco" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@notafraid?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Paul Cuoco</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Day(s) & Date(s)">Day 16–17 (May 16–17)</td>
+  <td data-label="Place">Osaka 🏙️</td>
+  <td data-label="Experience">Universal Studios Japan 🎢, Osaka Castle 🏯, Shinsekai 🏮</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Universal Studios Japan</div>
+          <img src="https://images.unsplash.com/photo-1612404459571-ccef4b6588e7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxVbml2ZXJzYWwlMjBTdHVkaW9zJTIwSmFwYW58ZW58MHwwfHx8MTc2NzAwMzQ4MHww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Roméo A." loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@gronemo?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Roméo A.</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Universal Studios Japan</div>
+          <img src="https://images.unsplash.com/photo-1718965909148-564c62389f54?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxVbml2ZXJzYWwlMjBTdHVkaW9zJTIwSmFwYW58ZW58MHwwfHx8MTc2NzAwMzQ4MHww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Joshua Tsu" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@joshdatsu?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Joshua Tsu</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Universal Studios Japan</div>
+          <img src="https://images.unsplash.com/photo-1718965909426-ebb42eb84ae1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxVbml2ZXJzYWwlMjBTdHVkaW9zJTIwSmFwYW58ZW58MHwwfHx8MTc2NzAwMzQ4MHww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Joshua Tsu" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@joshdatsu?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Joshua Tsu</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Osaka Castle</div>
+          <img src="https://images.unsplash.com/photo-1629569320448-a5504a24d384?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxPc2FrYSUyMENhc3RsZXxlbnwwfDB8fHwxNzY3MDAzNDgwfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Ken Cheung" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@hk_kenc?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Ken Cheung</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Osaka Castle</div>
+          <img src="https://images.unsplash.com/photo-1565559203353-49efc30af68d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxPc2FrYSUyMENhc3RsZXxlbnwwfDB8fHwxNzY3MDAzNDgwfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Jason Rost" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@inertkrypton?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Jason Rost</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Osaka Castle</div>
+          <img src="https://images.unsplash.com/photo-1558429121-8cebc52d40a2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxPc2FrYSUyMENhc3RsZXxlbnwwfDB8fHwxNzY3MDAzNDgwfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Alessio Ferretti" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@ilferrets?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Alessio Ferretti</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Day(s) & Date(s)">Day 18 (May 18)</td>
+  <td data-label="Place">Osaka → Hiroshima 🕊️</td>
+  <td data-label="Experience">Shinkansen 🚄, Peace Memorial Museum, Okonomiyaki dinner 🥘</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hiroshima Peace Memorial</div>
+          <img src="https://images.unsplash.com/photo-1658167865945-7e9949fa4d69?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxIaXJvc2hpbWElMjBQZWFjZSUyME1lbW9yaWFsfGVufDB8MHx8fDE3NjcwMDM0ODF8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Björn" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@camaradon?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Björn</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hiroshima Peace Memorial</div>
+          <img src="https://images.unsplash.com/photo-1719103503045-f250a20f2a16?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxIaXJvc2hpbWElMjBQZWFjZSUyME1lbW9yaWFsfGVufDB8MHx8fDE3NjcwMDM0ODF8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by sabari nathan" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@dsnphotography?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">sabari nathan</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Hiroshima Peace Memorial</div>
+          <img src="https://images.unsplash.com/photo-1648609854493-63884b421c56?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxIaXJvc2hpbWElMjBQZWFjZSUyME1lbW9yaWFsfGVufDB8MHx8fDE3NjcwMDM0ODF8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Roméo A." loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@gronemo?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Roméo A.</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Day(s) & Date(s)">Day 19 (May 19)</td>
+  <td data-label="Place">Hiroshima 🕊️</td>
+  <td data-label="Experience">Ferry to Miyajima Island 🚢, Great Torii Gate ⛩️, Mount Misen 🚠</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Itsukushima Shrine</div>
+          <img src="https://images.unsplash.com/photo-1504109586057-7a2ae83d1338?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxJdHN1a3VzaGltYSUyMFNocmluZXxlbnwwfDB8fHwxNzY3MDAzNDgyfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Nicki Eliza Schinow" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@nicki_schinow?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Nicki Eliza Schinow</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Itsukushima Shrine</div>
+          <img src="https://images.unsplash.com/photo-1658168096961-fa302cd67aa1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxJdHN1a3VzaGltYSUyMFNocmluZXxlbnwwfDB8fHwxNzY3MDAzNDgyfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Björn" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@camaradon?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Björn</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Itsukushima Shrine</div>
+          <img src="https://images.unsplash.com/photo-1598890771501-9f5fc6a41ba4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxJdHN1a3VzaGltYSUyMFNocmluZXxlbnwwfDB8fHwxNzY3MDAzNDgyfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Bing Hui Yau" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@yaubinghui?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Bing Hui Yau</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Miyajima Island</div>
+          <img src="https://images.unsplash.com/photo-1708371435245-f547f69aa35a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxNaXlhamltYSUyMElzbGFuZHxlbnwwfDB8fHwxNzY3MDAzNDgyfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Steffen Triekels" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@noxiderp?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Steffen Triekels</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Miyajima Island</div>
+          <img src="https://images.unsplash.com/photo-1664939381505-6a78d8b3fa31?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxNaXlhamltYSUyMElzbGFuZHxlbnwwfDB8fHwxNzY3MDAzNDgyfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Michael Hart" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@pianodr023?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Michael Hart</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Miyajima Island</div>
+          <img src="https://images.unsplash.com/photo-1504894946052-275dcbe7c71d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxNaXlhamltYSUyMElzbGFuZHxlbnwwfDB8fHwxNzY3MDAzNDgyfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Joe deSousa" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@mustangjoe?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Joe deSousa</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Day(s) & Date(s)">Day 20 (May 20)</td>
+  <td data-label="Place">Hiroshima → Nara 🦌</td>
+  <td data-label="Experience">Train 🚄, Todai-ji Great Buddha 🏯, feeding Nara deer 🦌</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Todai-ji Temple</div>
+          <img src="https://images.unsplash.com/photo-1574048682968-f6902b868782?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxUb2RhaS1qaSUyMFRlbXBsZXxlbnwwfDB8fHwxNzY3MDAzNDgzfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Cici Hung" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@cici9265?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Cici Hung</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Todai-ji Temple</div>
+          <img src="https://images.unsplash.com/photo-1699908894842-1d0eec54672e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxUb2RhaS1qaSUyMFRlbXBsZXxlbnwwfDB8fHwxNzY3MDAzNDgzfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Peter Amende" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@zutrinken?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Peter Amende</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Todai-ji Temple</div>
+          <img src="https://images.unsplash.com/photo-1732359882569-a4cc44273bc7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxUb2RhaS1qaSUyMFRlbXBsZXxlbnwwfDB8fHwxNzY3MDAzNDgzfDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Alan Jiang" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@alan_j?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Alan Jiang</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Nara Deer Park</div>
+          <img src="https://images.unsplash.com/photo-1731065211522-709833b1c6a0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxOYXJhJTIwRGVlciUyMFBhcmt8ZW58MHwwfHx8MTc2NzAwMzQ4M3ww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Tayla Kohler" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@taylaktictac?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Tayla Kohler</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Nara Deer Park</div>
+          <img src="https://images.unsplash.com/photo-1732427201528-18be215b9764?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxOYXJhJTIwRGVlciUyMFBhcmt8ZW58MHwwfHx8MTc2NzAwMzQ4M3ww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Tegan Conway" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@ginkgoshutter?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Tegan Conway</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Nara Deer Park</div>
+          <img src="https://images.unsplash.com/photo-1687539150697-02cccdc78897?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxOYXJhJTIwRGVlciUyMFBhcmt8ZW58MHwwfHx8MTc2NzAwMzQ4M3ww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Ken Li" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@kenli0893?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Ken Li</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Day(s) & Date(s)">Day 21 (May 21)</td>
+  <td data-label="Place">Nara 🦌</td>
+  <td data-label="Experience">Kasuga Taisha 🏮, Isuien Garden 🌿, relaxation & farewell dinner 🍴</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kasuga Taisha</div>
+          <img src="https://images.unsplash.com/photo-1720573167093-9a24a38c7194?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxLYXN1Z2ElMjBUYWlzaGF8ZW58MHwwfHx8MTc2NzAwMzQ4NHww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Alex" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@junypr?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Alex</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kasuga Taisha</div>
+          <img src="https://images.unsplash.com/photo-1724088646662-bf71485fc578?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxLYXN1Z2ElMjBUYWlzaGF8ZW58MHwwfHx8MTc2NzAwMzQ4NHww&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Alex" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@junypr?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Alex</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Day(s) & Date(s)">Day 22 (May 22, Departure)</td>
+  <td data-label="Place">Nara → Osaka/KIX 🛫</td>
+  <td data-label="Experience">Transfer to Kansai Airport 🛫, final souvenir shopping 🛍️</td>
+  <td data-label="Images" class="images-cell">-</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="important-logistical-notes" data-section="important-logistical-notes">📝📌 Important Logistical Notes</h2>
+<ul>
+<li><strong>Transport:</strong> Purchase a <strong>JR Pass</strong> (Whole Japan) or use <strong>IC cards (Suica/Pasmo)</strong> for local transit. The Shinkansen is the fastest way between cities.</li>
+<li><strong>Internet:</strong> Rent a <strong>Pocket Wi-Fi</strong> or buy an <strong>eSim</strong> (Ubigi/Airalo) at the airport for seamless navigation via Google Maps.</li>
+<li><strong>Luggage:</strong> Use <strong>Takkyubin</strong> (luggage forwarding service) between hotels to travel hands-free on trains.</li>
+<li><strong>Cash:</strong> While cards are becoming common, carry cash (Yen) for small shrines, markets, and some rural shops.</li>
+<li><strong>Etiquette:</strong> Observe silence on public transport and follow strict trash disposal rules.</li>
+</ul>
+<hr>
+<h2 id="alternatives-you-can-consider" data-section="alternatives-you-can-consider">🌐🔄 Alternatives You Can Consider</h2>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+  <th>Original Destination</th>
+  <th>Alternative(s)</th>
+  <th>Why Consider It</th>
+  <th>Images</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td data-label="Original Destination">Hakone 🌋</td>
+  <td data-label="Alternative(s)">Kawaguchiko</td>
+  <td data-label="Why Consider It">Better direct views of Mt. Fuji from the lake shore.</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kawaguchiko</div>
+          <img src="https://images.unsplash.com/photo-1701589201242-8120bb9e2fd1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxLYXdhZ3VjaGlrb3xlbnwwfDB8fHwxNzY3MDAzNDY4fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Joshua Tan" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@jtqx?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Joshua Tan</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kawaguchiko</div>
+          <img src="https://images.unsplash.com/photo-1620635066057-b304ba97bc6e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxLYXdhZ3VjaGlrb3xlbnwwfDB8fHwxNzY3MDAzNDY4fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Susann Schuster" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@susannschuster?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Susann Schuster</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kawaguchiko</div>
+          <img src="https://images.unsplash.com/photo-1683976886501-055f309e6eab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxLYXdhZ3VjaGlrb3xlbnwwfDB8fHwxNzY3MDAzNDY4fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Snowscat" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@snowscat?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Snowscat</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kawaguchiko</div>
+          <img src="https://images.unsplash.com/photo-1701589201154-def710279bb0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw0fHxLYXdhZ3VjaGlrb3xlbnwwfDB8fHwxNzY3MDAzNDY4fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Joshua Tan" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@jtqx?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Joshua Tan</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kawaguchiko</div>
+          <img src="https://images.unsplash.com/photo-1685097690492-444f5d043141?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw1fHxLYXdhZ3VjaGlrb3xlbnwwfDB8fHwxNzY3MDAzNDY4fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Chean Ang Heng" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@jameshca?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Chean Ang Heng</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kawaguchiko</div>
+          <img src="https://images.unsplash.com/photo-1592951510070-9f087839333b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw2fHxLYXdhZ3VjaGlrb3xlbnwwfDB8fHwxNzY3MDAzNDY4fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Alex Kashkabash" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@kshkbsh?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Alex Kashkabash</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+<tr>
+  <td data-label="Original Destination">Osaka 🏙️</td>
+  <td data-label="Alternative(s)">Kobe</td>
+  <td data-label="Why Consider It">Quieter coastal city, famous beef culture, and beautiful harbor.</td>
+  <td data-label="Images" class="images-cell"><div class="unsplash-carousel-container"><div class="unsplash-carousel">
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kobe</div>
+          <img src="https://images.unsplash.com/photo-1607586355793-34ab20949e28?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwxfHxLb2JlfGVufDB8MHx8fDE3NjcwMDM0Njh8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by note thanun" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@notethanun?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">note thanun</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kobe</div>
+          <img src="https://images.unsplash.com/photo-1559480671-12ceff3e511d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwyfHxLb2JlfGVufDB8MHx8fDE3NjcwMDM0Njh8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Weichao Tang" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@tevic?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Weichao Tang</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kobe</div>
+          <img src="https://images.unsplash.com/photo-1586396114948-c15f7fbf45ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHwzfHxLb2JlfGVufDB8MHx8fDE3NjcwMDM0Njh8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Mike Von" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@thevoncomplex?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Mike Von</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kobe</div>
+          <img src="https://images.unsplash.com/photo-1584770557404-a5d2a798e81a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw0fHxLb2JlfGVufDB8MHx8fDE3NjcwMDM0Njh8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Dean Bennett" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@deanbennett?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Dean Bennett</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kobe</div>
+          <img src="https://images.unsplash.com/photo-1573042961238-9fb53c332916?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw1fHxLb2JlfGVufDB8MHx8fDE3NjcwMDM0Njh8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Zion C" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@jcs_chen?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Zion C</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      
+        <div class="unsplash-image-wrapper">
+          <div class="unsplash-place-name">Kobe</div>
+          <img src="https://images.unsplash.com/photo-1629273152826-fcdf5a669354?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDA5NjJ8MHwxfHNlYXJjaHw2fHxLb2JlfGVufDB8MHx8fDE3NjcwMDM0Njh8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Photo by Samantha Hendrata" loading="lazy" />
+          <div class="unsplash-attribution">
+            Photo by <a href="https://unsplash.com/@madebysamh?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Samantha Hendrata</a> on <a href="https://unsplash.com?utm_source=Roamio&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+          </div>
+        </div>
+      </div></div></td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="total-trip-budget" data-section="total-trip-budget">💰💸 Total Trip Budget</h2>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+  <th>Category</th>
+  <th>Cost (INR)</th>
+  <th>Optimize Budget</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td data-label="Category">Flights ✈️</td>
+  <td data-label="Cost (INR)">₹180,000</td>
+  <td data-label="Optimize Budget">Book via Singapore or Vietnam for better rates.</td>
+</tr>
+<tr>
+  <td data-label="Category">Hotels 🏨</td>
+  <td data-label="Cost (INR)">₹240,000</td>
+  <td data-label="Optimize Budget">Use Business Hotels (APA, Toyoko Inn) for value.</td>
+</tr>
+<tr>
+  <td data-label="Category">Food 🍴</td>
+  <td data-label="Cost (INR)">₹110,000</td>
+  <td data-label="Optimize Budget">Lunch sets are significantly cheaper than dinner.</td>
+</tr>
+<tr>
+  <td data-label="Category">Activities 🎟️</td>
+  <td data-label="Cost (INR)">₹65,000</td>
+  <td data-label="Optimize Budget">Pre-book TeamLab and USJ tickets 1 month prior.</td>
+</tr>
+<tr>
+  <td data-label="Category">Transport 🚖</td>
+  <td data-label="Cost (INR)">₹75,000</td>
+  <td data-label="Optimize Budget">Use the JR Pass and local day subway passes.</td>
+</tr>
+<tr>
+  <td data-label="Category">Misc 🛒</td>
+  <td data-label="Cost (INR)">₹15,000</td>
+  <td data-label="Optimize Budget">Use tax-free shopping with your passport.</td>
+</tr>
+<tr>
+  <td data-label="Category"><strong>Total</strong></td>
+  <td data-label="Cost (INR)"><strong>₹685,000</strong></td>
+  <td data-label="Optimize Budget">—</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="visa-information" data-section="visa-information">🛂🛃 Visa Information</h2>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+  <th>Destination</th>
+  <th>Visa Requirement</th>
+  <th>Notes</th>
+  <th>Apply By</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td data-label="Destination">Japan 🇯🇵</td>
+  <td data-label="Visa Requirement">eVisa (Short-term)</td>
+  <td data-label="Notes">Applicable for Indian Tourists.</td>
+  <td data-label="Apply By">3 weeks 🗓️</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="weather" data-section="weather">🌤️☀️ Weather</h2>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+  <th>Destination</th>
+  <th>Weather</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td data-label="Destination">Tokyo/Kyoto</td>
+  <td data-label="Weather">18–24°C, Pleasant spring weather, occasional rain.</td>
+</tr>
+<tr>
+  <td data-label="Destination">Takayama/Alps</td>
+  <td data-label="Weather">12–19°C, Cooler mountain air, light jacket needed.</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="safety-geopolitical-risks" data-section="safety-geopolitical-risks">⚠️🚨 Safety & Geopolitical Risks</h2>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+  <th>Destination</th>
+  <th>Risk Level</th>
+  <th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td data-label="Destination">Japan</td>
+  <td data-label="Risk Level">Low ✅</td>
+  <td data-label="Notes">Extremely safe. Be aware of earthquake protocols.</td>
+</tr>
+</tbody>
+</table></div>
+    </main>
+  </div>
+</div>
+
+<button class="roamio-pill-cta" id="roamio-pill" onclick="openRoamioModal()" title="Create your own itinerary">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21 16V14L13 9V3.5C13 2.67 12.33 2 11.5 2C10.67 2 10 2.67 10 3.5V9L2 14V16L10 13.5V19L8 20.5V22L11.5 21L15 22V20.5L13 19V13.5L21 16Z" fill="white"/>
+  </svg>
+</button>
+
+<!-- Roamio CTA Modal -->
+<div class="roamio-modal-overlay" id="roamio-modal" onclick="closeRoamioModal()">
+  <div class="roamio-modal-content" onclick="event.stopPropagation()">
+    <button class="roamio-modal-close" onclick="closeRoamioModal()" aria-label="Close modal">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    
+    <div class="roamio-modal-header">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="roamio-modal-icon">
+        <path d="M21 16V14L13 9V3.5C13 2.67 12.33 2 11.5 2C10.67 2 10 2.67 10 3.5V9L2 14V16L10 13.5V19L8 20.5V22L11.5 21L15 22V20.5L13 19V13.5L21 16Z" fill="url(#gradient1)"/>
+        <defs>
+          <linearGradient id="gradient1" x1="2" y1="2" x2="21" y2="22" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#667eea"/>
+            <stop offset="1" stop-color="#764ba2"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <h3 class="roamio-modal-title">Ready to Plan Your Adventure?</h3>
+    </div>
+    
+    <div class="roamio-modal-buttons">
+      <a href="https://roamio.travel/#travel-form" target="_blank" rel="noopener noreferrer" class="roamio-modal-btn roamio-btn-free">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 11L12 14L22 4M21 12V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="roamio-btn-label">Get More Free Itineraries</span>
+      </a>
+      
+      <a href="https://roamio.travel/#login" target="_blank" rel="noopener noreferrer" class="roamio-modal-btn roamio-btn-upgrade">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 10V3L4 14H11V21L20 10H13Z" fill="white"/>
+        </svg>
+        <span class="roamio-btn-label">Opt for Premium</span>
+      </a>
+      
+      <a href="https://roamio.travel/#premium-features" target="_blank" rel="noopener noreferrer" class="roamio-modal-btn roamio-btn-premium">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="currentColor"/>
+        </svg>
+        <span class="roamio-btn-label">See Premium Features</span>
+      </a>
+    </div>
+  </div>
+</div>
+<div class="floating-toc" id="toc">
+    <div class="toc-header" onclick="toggleTOC()">
+      <h3>📋 Contents</h3>
+      <button class="toc-toggle" aria-label="Toggle table of contents">▼</button>
+    </div>
+    <div class="toc-content" id="toc-content"><ul><li style="margin-left: 0rem;"><a href="#quick-glance-summary-example" data-section="quick-glance-summary-example">📊👀 Quick Glance Summary Example</a></li>
+<li style="margin-left: 0rem;"><a href="#itinerary-breakdown" data-section="itinerary-breakdown">📝🗓️ Itinerary Breakdown</a></li>
+<li style="margin-left: 0rem;"><a href="#important-logistical-notes" data-section="important-logistical-notes">📝📌 Important Logistical Notes</a></li>
+<li style="margin-left: 0rem;"><a href="#alternatives-you-can-consider" data-section="alternatives-you-can-consider">🌐🔄 Alternatives You Can Consider</a></li>
+<li style="margin-left: 0rem;"><a href="#total-trip-budget" data-section="total-trip-budget">💰💸 Total Trip Budget</a></li>
+<li style="margin-left: 0rem;"><a href="#visa-information" data-section="visa-information">🛂🛃 Visa Information</a></li>
+<li style="margin-left: 0rem;"><a href="#weather" data-section="weather">🌤️☀️ Weather</a></li>
+<li style="margin-left: 0rem;"><a href="#safety-geopolitical-risks" data-section="safety-geopolitical-risks">⚠️🚨 Safety & Geopolitical Risks</a></li>
+</ul></div></div>
+<script>
+let scrollTimeout;
+
+
+function openTOC() {
+  const toc = document.getElementById('toc');
+  if (!toc) return;
+  
+  const content = document.getElementById('toc-content');
+  const toggle = document.querySelector('.toc-toggle');
+  if (content && toggle) {
+    content.classList.remove('collapsed');
+    toggle.classList.remove('collapsed');
+  }
+  
+  toc.classList.add('show');
+  document.body.classList.add('toc-open');
+}
+
+
+function closeTOC() {
+  const toc = document.getElementById('toc');
+  if (!toc) return;
+  toc.classList.remove('show');
+  document.body.classList.remove('toc-open');
+}
+
+
+function toggleFloatingTOC() {
+  const toc = document.getElementById('toc');
+  if (!toc) return;
+  if (toc.classList.contains('show')) closeTOC();
+  else openTOC();
+}
+
+
+function toggleTOC() {
+  const content = document.getElementById('toc-content');
+  const toggle = document.querySelector('.toc-toggle');
+  if (content && toggle) {
+    const wasCollapsed = content.classList.contains('collapsed');
+    content.classList.toggle('collapsed');
+    toggle.classList.toggle('collapsed');
+  }
+}
+
+
+function shareItinerary() {
+  const currentUrl = window.location.href;
+  const pageTitle = document.title || 'Travel Itinerary';
+  const shareText = 'Check out this travel itinerary from Roamio!';
+  
+  // Web Share API (works on mobile and some desktop browsers)
+  if (navigator.share) {
+    navigator.share({
+      title: pageTitle,
+      text: shareText,
+      url: currentUrl
+    })
+    .then(() => console.log('Shared successfully'))
+    .catch((error) => {
+      // User cancelled share or error occurred
+      if (error.name !== 'AbortError') {
+        fallbackShare(currentUrl, pageTitle);
+      }
+    });
+  } else {
+    // Fallback for browsers without Web Share API
+    fallbackShare(currentUrl, pageTitle);
+  }
+}
+
+
+function fallbackShare(url, title) {
+  // Try clipboard API first
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url)
+      .then(() => {
+        showShareNotification('Link copied to clipboard! 📋');
+      })
+      .catch(() => {
+        // Fallback to download HTML if clipboard fails
+        downloadHTML(title);
+      });
+  } else {
+    // Direct fallback to download
+    downloadHTML(title);
+  }
+}
+
+
+function downloadHTML(titleText) {
+  const timestamp = new Date().toISOString().slice(0, 10);
+  const filename = titleText.replace(/[^a-z0-9]/gi, '-').toLowerCase() + '-' + timestamp + '.html';
+  
+  const htmlContent = document.documentElement.outerHTML;
+  const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(link.href);
+  
+  showShareNotification('Itinerary downloaded! 📥');
+}
+
+
+function showShareNotification(message) {
+  const notification = document.createElement('div');
+  notification.textContent = message;
+  notification.style.cssText = `
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    z-index: 10001;
+    animation: slideDown 0.3s ease;
+  `;
+  
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.animation = 'slideUp 0.3s ease';
+    setTimeout(() => {
+      document.body.removeChild(notification);
+    }, 300);
+  }, 3000);
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  const hasHash = window.location.hash && window.location.hash.length > 1;
+
+
+  if (hasHash) {
+    closeTOC();
+    setTimeout(() => {
+      const id = window.location.hash.substring(1);
+      const target = document.getElementById(id);
+      if (target) {
+        target.scrollIntoView({ behavior: 'auto', block: 'start' });
+      }
+    }, 0);
+  } else {
+    openTOC();
+  }
+
+  const words = document.body.innerText.split(/\s+/).length;
+  const mins = Math.ceil(words / 200);
+  const h1 = document.querySelector('h1');
+  if (h1 && mins > 0) {
+    const badge = document.createElement('div');
+    badge.className = 'reading-time';
+    badge.textContent = '📖 ' + mins + ' mins read';
+    const headerLeft = document.querySelector('.page-header-left');
+    if (headerLeft) {
+      headerLeft.appendChild(badge);
+    } else {
+      h1.parentNode?.insertBefore(badge, h1.nextSibling);
+    }
+  }
+
+
+  const secObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        document.querySelectorAll('.toc a').forEach(a => a.classList.remove('active'));
+        const link = document.querySelector('.toc a[data-section="' + id + '"]');
+        if (link) {
+          link.classList.add('active');
+        }
+      }
+    });
+  }, { threshold: 0.3, rootMargin: '-20% 0px -40% 0px' });
+
+
+  document.querySelectorAll('h2, h3, h4').forEach(h => secObserver.observe(h));
+
+
+  document.addEventListener('click', function(e) {
+    const toc = document.getElementById('toc');
+
+
+    if (toc && toc.classList.contains('show')) {
+      if (!toc.contains(e.target) && !e.target.classList.contains('toc-fab')) {
+        closeTOC();
+      }
+    }
+
+
+    if (e.target.tagName === 'A' && e.target.getAttribute('href')?.startsWith('#')) {
+      const parentToc = e.target.closest('.floating-toc');
+      e.preventDefault();
+      const targetId = e.target.getAttribute('href').substring(1);
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      if (parentToc) {
+        closeTOC();
+      }
+    }
+  });
+
+  // Add CSS animation for notifications
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+    @keyframes slideUp {
+      from {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+      }
+    }
+  `;
+  document.head.appendChild(style);
+});
+
+
+window.addEventListener('scroll', () => {
+  const bar = document.querySelector('.scroll-progress');
+  if (bar) {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    const p = (window.scrollY / h);
+    bar.style.transform = 'scaleX(' + p + ')';
+  }
+
+  const header = document.getElementById('page-header');
+  const tocFab = document.querySelector('.toc-fab');
+  clearTimeout(scrollTimeout);
+  
+  if (window.scrollY > 50) {
+    header.classList.add('hidden');
+    tocFab.classList.add('show');
+  } else {
+    header.classList.remove('hidden');
+    tocFab.classList.remove('show');
+  }
+  
+  scrollTimeout = setTimeout(() => {
+    if (window.scrollY > 100) {
+      header.classList.add('hidden');
+    }
+  }, 150);
+});
+
+// Roamio Pill CTA Logic
+(function() {
+  var pill = document.getElementById('roamio-pill');
+  if (!pill) return; // ctaType === 'none' → no floater at all
+
+  var hasShown = false;
+
+  // Show after 800ms OR 5% scroll (whichever comes first)
+  setTimeout(function() {
+    if (!hasShown) {
+      pill.classList.add('show');
+      hasShown = true;
+    }
+  }, 800);
+
+  window.addEventListener('scroll', function() {
+    var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    if (maxScroll <= 0) return;
+    var scrollPercent = (window.scrollY / maxScroll) * 100;
+
+    // Show earlier: after 10% scroll instead of feeling like 3-4 seconds delay
+    if (scrollPercent > 10 && !hasShown) {
+      pill.classList.add('show');
+      hasShown = true;
+    }
+  });
+  // Track clicks
+  pill.addEventListener('click', function() {
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'cta_click', {
+        'location': 'floating_pill',
+        'itinerary_type': 'Initial Itinerary',
+      });
+    }
+  });
+})();
+
+// Roamio Modal Functions
+function openRoamioModal() {
+  const modal = document.getElementById('roamio-modal');
+  if (modal) {
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeRoamioModal() {
+  const modal = document.getElementById('roamio-modal');
+  if (modal) {
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeRoamioModal();
+  }
+});
+
+function openWhatsAppSupport() {
+  var baseUrl = 'https://wa.me/919321335420';
+  var message = 'Hey Roamio team, I need help with my itinerary.';  // customise text
+  var url = baseUrl + '?text=' + encodeURIComponent(message);
+  window.open(url, '_blank');
+}
+
+</script>
+</body>
+</html>
